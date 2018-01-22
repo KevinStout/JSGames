@@ -14,11 +14,13 @@ const PADDLE_WIDTH = 100;
 const PADDLE_THICKNESS = 10;
 const PADDLE_DIST_FROM_EDGE =60;
 
-const BRICK_W = 100;
-const BRICK_H = 50;
-const BRICK_COUNT = 8;
+const BRICK_W = 80;
+const BRICK_H = 20;
+const BRICK_COLS = 10;
+const BRICK_ROWS = 14;
+const BRICK_GAP = 2;
 
-var brickGrid = new Array(BRICK_COUNT);
+var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
 
 mouseX = 0;
 mouseY = 0;
@@ -34,13 +36,11 @@ function updateMousePos(evt){
 }
 
 function brickReset(){
-    for(var i=0; i<BRICK_COUNT; i++){
-        if(Math.random() < 0.5){
-            brickGrid[i] = true;
-        } else {
-            brickGrid[i] = false;
-        } // end of else random check
+    for(var i=0; i<BRICK_COLS * BRICK_ROWS; i++){
+        brickGrid[i] = true;
+       
     } // end of for each brick loop
+
 } // end of brickReset func
 
 window.onload = function () {
@@ -83,6 +83,18 @@ function moveAll(){
         ballSpeedY *= -1;
     }
 
+    var ballBrickCol = Math.floor(ballX / BRICK_W);
+    var ballBrickRow = Math.floor(ballY / BRICK_H);
+    var brickIndexUnderball = rowColToArrayIndex(ballBrickCol, ballBrickRow)
+    
+    if(ballBrickCol >= 0 && ballBrickCol < BRICK_COLS && ballBrickRow >= 0 && ballBrickRow < BRICK_ROWS){
+        if(brickGrid[brickIndexUnderball] == true){
+            brickGrid[brickIndexUnderball] = false;
+            ballSpeedY *= -1;
+        }
+        
+    }
+
     var paddleTopEdgeY = canvas.height-PADDLE_DIST_FROM_EDGE;
     var paddleBottomEdgeY = paddleTopEdgeY + PADDLE_THICKNESS;
     var paddleLeftEdgeX = paddleX;
@@ -111,17 +123,24 @@ function drawAll(){
     colorRect(paddleX, canvas.height-PADDLE_DIST_FROM_EDGE, PADDLE_WIDTH, PADDLE_THICKNESS, 'white' );
 
     drawBricks();
+}
 
-    colorText(mouseX + "," + mouseY, mouseX, mouseY, 'yellow');
+function rowColToArrayIndex(col, row){
+    return col + BRICK_COLS * row;
 }
 
 function drawBricks(){
 
-    for(var i=0; i<BRICK_COUNT; i++){
-        if(brickGrid[i] == true){
-            colorRect(BRICK_W*i, 0, BRICK_W-2, BRICK_H, 'blue');
-        } // end of is brick here check
-    } // end of for each brick
+    for (let eachRow = 0; eachRow < BRICK_ROWS; eachRow++) {
+        for(var eachCol=0; eachCol<BRICK_COLS; eachCol++){
+
+            var arryIndex = rowColToArrayIndex(eachCol, eachRow);
+
+            if(brickGrid[arryIndex] == true){
+                colorRect(BRICK_W*eachCol, BRICK_H*eachRow, BRICK_W-BRICK_GAP, BRICK_H-BRICK_GAP, 'blue');
+            } // end of is brick here check
+        } // end of for each brick i     
+    } // end of for each row
 } // end of drawBricks func
 
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor){
