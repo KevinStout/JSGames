@@ -14,6 +14,12 @@ const PADDLE_WIDTH = 100;
 const PADDLE_THICKNESS = 10;
 const PADDLE_DIST_FROM_EDGE =60;
 
+const BRICK_W = 100;
+const BRICK_H = 50;
+const BRICK_COUNT = 8;
+
+var brickGrid = new Array(BRICK_COUNT);
+
 mouseX = 0;
 mouseY = 0;
     
@@ -27,6 +33,16 @@ function updateMousePos(evt){
     paddleX = mouseX - PADDLE_WIDTH/2;
 }
 
+function brickReset(){
+    for(var i=0; i<BRICK_COUNT; i++){
+        if(Math.random() < 0.5){
+            brickGrid[i] = true;
+        } else {
+            brickGrid[i] = false;
+        } // end of else random check
+    } // end of for each brick loop
+} // end of brickReset func
+
 window.onload = function () {
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
@@ -35,6 +51,8 @@ window.onload = function () {
     setInterval(updateAll, 1000/framesPerSecond);
 
     canvas.addEventListener('mousemove', updateMousePos);
+
+    brickReset();
 }
 
 function updateAll() {
@@ -92,8 +110,19 @@ function drawAll(){
 
     colorRect(paddleX, canvas.height-PADDLE_DIST_FROM_EDGE, PADDLE_WIDTH, PADDLE_THICKNESS, 'white' );
 
+    drawBricks();
+
     colorText(mouseX + "," + mouseY, mouseX, mouseY, 'yellow');
 }
+
+function drawBricks(){
+
+    for(var i=0; i<BRICK_COUNT; i++){
+        if(brickGrid[i] == true){
+            colorRect(BRICK_W*i, 0, BRICK_W-2, BRICK_H, 'blue');
+        } // end of is brick here check
+    } // end of for each brick
+} // end of drawBricks func
 
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor){
     canvasContext.fillStyle = fillColor;
