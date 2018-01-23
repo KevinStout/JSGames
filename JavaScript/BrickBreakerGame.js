@@ -15,16 +15,29 @@ const PADDLE_THICKNESS = 10;
 const PADDLE_DIST_FROM_EDGE =60;
 
 const BRICK_W = 80;
-const BRICK_H = 20;
+const BRICK_H = 40;
 const BRICK_COLS = 10;
-const BRICK_ROWS = 14;
+const BRICK_ROWS = 7;
 const BRICK_GAP = 2;
 
 var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
 
 mouseX = 0;
 mouseY = 0;
-    
+
+window.onload = function () {
+    canvas = document.getElementById('gameCanvas');
+    canvasContext = canvas.getContext('2d');
+
+    var framesPerSecond = 30;
+    setInterval(updateAll, 1000/framesPerSecond);
+
+    canvas.addEventListener('mousemove', updateMousePos);
+
+    brickReset();
+   // ballReset();
+}
+    v
 function updateMousePos(evt){
     var rect = canvas.getBoundingClientRect();
     var root = document.documentElement;
@@ -43,18 +56,6 @@ function brickReset(){
 
 } // end of brickReset func
 
-window.onload = function () {
-    canvas = document.getElementById('gameCanvas');
-    canvasContext = canvas.getContext('2d');
-
-    var framesPerSecond = 30;
-    setInterval(updateAll, 1000/framesPerSecond);
-
-    canvas.addEventListener('mousemove', updateMousePos);
-
-    brickReset();
-}
-
 function updateAll() {
     moveAll();
     drawAll();
@@ -66,6 +67,12 @@ function ballReset(){
 }
 
 function moveAll(){
+    ballMove();
+    ballBrickHandling();
+    ballPaddleHandling();
+}
+
+function ballMove(){
     ballX += ballSpeedX;
     ballY += ballSpeedY;
         
@@ -82,7 +89,9 @@ function moveAll(){
     if(ballY < 0){ // top of screen
         ballSpeedY *= -1;
     }
+}
 
+function ballBrickHandling(){
     var ballBrickCol = Math.floor(ballX / BRICK_W);
     var ballBrickRow = Math.floor(ballY / BRICK_H);
     var brickIndexUnderball = rowColToArrayIndex(ballBrickCol, ballBrickRow)
@@ -91,10 +100,11 @@ function moveAll(){
         if(brickGrid[brickIndexUnderball] == true){
             brickGrid[brickIndexUnderball] = false;
             ballSpeedY *= -1;
-        }
-        
-    }
+        } // end of if birck is there remove it and change ball direction        
+    } // end of checking for valid col and row
+} // end of ballBrickHandling func
 
+function ballPaddleHandling(){
     var paddleTopEdgeY = canvas.height-PADDLE_DIST_FROM_EDGE;
     var paddleBottomEdgeY = paddleTopEdgeY + PADDLE_THICKNESS;
     var paddleLeftEdgeX = paddleX;
@@ -111,7 +121,7 @@ function moveAll(){
             var ballDistFromPaddleCenterX = ballX - centerOfPaddleX;
 
             ballSpeedX = ballDistFromPaddleCenterX * 0.35; // increase this number for more ball speed off the paddle
-        }
+    }
 }
 
 function drawAll(){
