@@ -99,7 +99,19 @@ function ballBrickHandling(){
     if(ballBrickCol >= 0 && ballBrickCol < BRICK_COLS && ballBrickRow >= 0 && ballBrickRow < BRICK_ROWS){
         if(brickGrid[brickIndexUnderball] == true){
             brickGrid[brickIndexUnderball] = false;
-            ballSpeedY *= -1;
+
+            var prevBallX = ballX - ballSpeedX;
+            var prevBallY = ballY - ballSpeedY;
+            var prevBrickCol = Math.floor(prevBallX / BRICK_W);
+            var prevBrickRow = Math.floor(prevBallY / BRICK_H);
+
+            if(prevBrickCol != ballBrickCol){
+                ballSpeedX *= -1;
+            }
+            if(prevBrickRow != ballBrickRow){
+                ballSpeedY *= -1;
+            }
+            
         } // end of if birck is there remove it and change ball direction        
     } // end of checking for valid col and row
 } // end of ballBrickHandling func
