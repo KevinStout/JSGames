@@ -1,0 +1,5 @@
+Drive the car around the track:
+                                W or Up Arrow = Forward
+                                A or Left Arrow = Turn Left
+                                S or Down Arrow = Reverse
+                                D or Right Arrow = Turn Right

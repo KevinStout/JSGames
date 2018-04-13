@@ -1,12 +1,15 @@
 
+var carPic = document.createElement("img");
+var carPicLoaded = false;
+
 var canvas;
 var canvasContext;
 
-var ballX = 75;
-var ballY = 75;
+var carX = 75;
+var carY = 75;
 
-var ballSpeedX = 5;
-var ballSpeedY = 7;
+var carAngle = 0;
+var carSpeed = 0;
 
 const TRACK_W = 40;
 const TRACK_H = 40;
@@ -24,12 +27,26 @@ var trackGrid = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                  1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-                 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+                 1, 0, 2, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
                  1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
                  1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
                  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
 
+const KEY_LEFT_ARROW = 37;
+const KEY_UP_ARROW = 38;
+const KEY_RIGHT_ARROW = 39;
+const KEY_DOWN_ARROW = 40;
+
+const KEY_A = 65; // left
+const KEY_W = 87; // up
+const KEY_D = 68; // right
+const KEY_S = 83; // down
+
+var keyHeld_Gas = false;
+var keyHeld_Reverse = false;
+var keyHeld_TurnLeft = false;
+var keyHeld_TurnRight = false;
 
 mouseX = 0;
 mouseY = 0;
@@ -42,7 +59,49 @@ window.onload = function () {
     setInterval(updateAll, 1000/framesPerSecond);
 
     canvas.addEventListener('mousemove', updateMousePos);
-    ballReset();
+
+    document.addEventListener('keydown', keyPressed);
+    document.addEventListener('keyup', keyReleased);
+
+    carPic.onload = function(){
+        carPicLoaded = true;
+    }
+    carPic.src = "../media/player1car.png";
+
+    carReset();
+}
+
+function keyPressed(evt) {
+    //console.log("key pressed: " + evt.keyCode);    
+    if(evt.keyCode == KEY_LEFT_ARROW || evt.keyCode == KEY_A){ // turn car left
+        keyHeld_TurnLeft = true;        
+    }
+    if(evt.keyCode == KEY_RIGHT_ARROW || evt.keyCode == KEY_D){ // turn car right 
+        keyHeld_TurnRight = true;        
+    }
+    if(evt.keyCode == KEY_UP_ARROW || evt.keyCode == KEY_W){ // move car forward
+        keyHeld_Gas = true;        
+    }
+    if(evt.keyCode == KEY_DOWN_ARROW || evt.keyCode == KEY_S){ // move car back
+        keyHeld_Reverse = true;        
+    }
+    evt.preventDefault();
+}
+
+function keyReleased(evt) {
+    //console.log("key released: " + evt.keyCode);    
+    if(evt.keyCode == KEY_LEFT_ARROW || evt.keyCode == KEY_A){ // turn car left
+        keyHeld_TurnLeft = false;        
+    }
+    if(evt.keyCode == KEY_RIGHT_ARROW || evt.keyCode == KEY_D){ // turn car right 
+        keyHeld_TurnRight = false;        
+    }
+    if(evt.keyCode == KEY_UP_ARROW || evt.keyCode == KEY_W){ // move car forward
+        keyHeld_Gas = false;        
+    }
+    if(evt.keyCode == KEY_DOWN_ARROW || evt.keyCode == KEY_S){ // move car back
+        keyHeld_Reverse = false;        
+    }
 }
     
 function updateMousePos(evt){
@@ -52,12 +111,12 @@ function updateMousePos(evt){
     mouseX = evt.clientX - rect.left - root.scrollLeft;
     mouseY = evt.clientY - rect.top - root.scrollTop;
 
-    //hack to test ball in any position
+    //hack to test car in any position
     /*
-    ballX = mouseX;
-    ballY = mouseY;
-    ballSpeedX = 4;
-    ballSpeedY = -4;
+    carX = mouseX;
+    carY = mouseY;
+    carSpeedX = 4;
+    carSpeedY = -4;
     */
 }
 
@@ -67,34 +126,42 @@ function updateAll() {
     drawAll();
 }
 
-function ballReset(){
-    ballX = canvas.width/2;
-    ballY = canvas.height/2;
-}
+function carReset(){
+    for (let eachRow = 0; eachRow < TRACK_ROWS; eachRow++) {
+        for(var eachCol=0; eachCol<TRACK_COLS; eachCol++){
+
+            var arryIndex = rowColToArrayIndex(eachCol, eachRow);
+
+            if(trackGrid[arryIndex] == 2){ //setting car position based on grid
+                trackGrid[arryIndex] = 0;
+                carX = eachCol * TRACK_W + TRACK_W/2;
+                carY = eachRow * TRACK_H + TRACK_H/2;
+            }
+        }
+    }
+}// end of carReset
 
 function moveAll(){
-    ballMove();
-    ballTrackHandling();
+    carMove();
+    carTrackHandling();
 }
 
-function ballMove(){
-    ballX += ballSpeedX;
-    ballY += ballSpeedY;
-        
-    if(ballX > canvas.width && ballSpeedX > 0.0){ // right side of screen
-        ballSpeedX *= -1;
+function carMove(){
+    if (keyHeld_Gas) {
+        carSpeed += 0.02;
     }
-    if(ballX < 0 && ballSpeedX < 0.0){ // left side of screen
-        ballSpeedX *= -1;
+    if (keyHeld_Reverse) {
+        carSpeed -= 0.04;
+    }
+    if (keyHeld_TurnLeft) {
+        carAngle -= 0.06;
+    }
+    if (keyHeld_TurnRight) {
+        carAngle += 0.06;
     }
 
-    if(ballY > canvas.height){ // bottom of screen
-        ballReset();
-
-    }
-    if(ballY < 0 && ballSpeedY < 0.0){ // top of screen
-        ballSpeedY *= -1;
-    }
+    carX += Math.cos(carAngle) * carSpeed;
+    carY += Math.sin(carAngle) * carSpeed;
 }
 
 function isTrackAtColRow(col, row) {
@@ -106,53 +173,40 @@ function isTrackAtColRow(col, row) {
     }
 }
 
-function ballTrackHandling(){
-    var ballTrackCol = Math.floor(ballX / TRACK_W);
-    var ballTrackRow = Math.floor(ballY / TRACK_H);
-    var trackIndexUnderball = rowColToArrayIndex(ballTrackCol, ballTrackRow);
+function carTrackHandling(){
+    var carTrackCol = Math.floor(carX / TRACK_W);
+    var carTrackRow = Math.floor(carY / TRACK_H);
+    var trackIndexUndercar = rowColToArrayIndex(carTrackCol, carTrackRow);
     
-    if(ballTrackCol >= 0 && ballTrackCol < TRACK_COLS && ballTrackRow >= 0 && ballTrackRow < TRACK_ROWS){
-        if(isTrackAtColRow(ballTrackCol, ballTrackRow)){
+    if(carTrackCol >= 0 && carTrackCol < TRACK_COLS && carTrackRow >= 0 && carTrackRow < TRACK_ROWS){
+        if(isTrackAtColRow(carTrackCol, carTrackRow)){
             
+            carSpeed *= -1; //rev car speed
+            //carSpeed = 0; //stop the car when hitting a wall
 
-            var prevBallX = ballX - ballSpeedX;
-            var prevBallY = ballY - ballSpeedY;
-            var prevTrackCol = Math.floor(prevBallX / TRACK_W);
-            var prevTrackRow = Math.floor(prevBallY / TRACK_H);
-
-            var bothTestsFailed = true;
-
-            if(prevTrackCol != ballTrackCol){                
-                if(isTrackAtColRow(prevTrackCol, ballTrackRow) == false){ //checking if there is a track on the side of the track that was hit
-                    ballSpeedX *= -1;
-                    bothTestsFailed = false;
-                }                
-            }
-            if(prevTrackRow != ballTrackRow){
-                
-                if(isTrackAtColRow(prevTrackRow, ballTrackCol) == false){ //checking if there is a track on the top or bottom of the track that was hit
-                    ballSpeedY *= -1;
-                    bothTestsFailed = false;
-                }                
-            }
-            
-            if(bothTestsFailed){ // prevents ball from going right through the edge of a track when other tracks are around it
-                ballSpeedX *= -1;
-                ballSpeedY *= -1;
-            }
-
-        } // end of if birck is there remove it and change ball direction        
+        } // end of if, track hit stop car        
     } // end of checking for valid col and row
-} // end of ballTrackHandling func
+} // end of carTrackHandling func
 
 
 function drawAll(){
     
-    colorRect(0,0, canvas.width, canvas.height, 'black');
+    colorRect(0,0, canvas.width, canvas.height, 'black'); //clear screen
 
-    colorCircle(ballX, ballY, 10, 'red');
+    //colorCircle(carX, carY, 10, 'red');
+    if(carPicLoaded){
+        drawBitmapCenteredWithRotation(carPic, carX, carY, carAngle);
+    }
 
     drawTracks();
+}
+
+function drawBitmapCenteredWithRotation(useBitmap, atX, atY, withAng) { // drawing the car image and rotation
+    canvasContext.save();
+    canvasContext.translate(atX, atY);
+    canvasContext.rotate(withAng);
+    canvasContext.drawImage(useBitmap, -useBitmap.width/2, -useBitmap.height/2);
+    canvasContext.restore();
 }
 
 function rowColToArrayIndex(col, row){

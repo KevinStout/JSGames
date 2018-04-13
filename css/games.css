@@ -8,10 +8,20 @@ body{
 canvas{
     margin-top: 5%;
     display: inline;
+    cursor: none;
 }
 a{
     position: absolute;
     top: 0;
+    left: 20px;
+    text-align: center;
+    font-size: 3em;
+    color: white;
+}
+
+#readMe{
+    position: absolute;
+    top: 850px;    
     left: 20px;
     text-align: center;
     font-size: 3em;

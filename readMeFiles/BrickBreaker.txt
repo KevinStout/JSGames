@@ -1,0 +1,4 @@
+Bounce the ball off the paddle, to direct it to hit the bricks.
+when the bricks are hit they are removed from the play area.
+If the ball goes off the bottom of the screen the bricks will reset.
+Hitting the ball off different parts of the paddle will change the angle and speed of the ball.
