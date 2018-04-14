@@ -4,17 +4,15 @@ var canvasContext;
 window.onload = function () {
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
+    loadingPage();
+    loadImages();
+}
 
+function imageLoadingDoneStartGame(){
     var framesPerSecond = 30;
     setInterval(updateAll, 1000/framesPerSecond);
 
-    setupInput();
-
-    carPic.onload = function(){
-        carPicLoaded = true;
-    }
-    carPic.src = "../media/player1car.png";
-
+    setupInput();    
     carReset();
 }
 
@@ -28,14 +26,9 @@ function moveAll(){
     carTrackHandling();
 }
 
-function drawAll(){    
-    clearScreen();
-    carDraw();
+function drawAll(){ 
     drawTracks();
-}
-
-function clearScreen(){
-    colorRect(0,0, canvas.width, canvas.height, 'black');
+    carDraw();    
 }
 
 function rowColToArrayIndex(col, row){

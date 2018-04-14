@@ -22,3 +22,11 @@ function colorText(showWords, textX, textY, fillColor){
     canvasContext.fillStyle = fillColor;
     canvasContext.fillText(showWords, textX, textY);
 }
+
+function loadingPage(){
+    console.log("LOADING...");    
+    colorRect(0,0, canvas.width, canvas.height, 'black');
+    colorText("LOADING...", canvas.width/2, canvas.height/2, 'white');
+    console.log("DONE LOADING");
+    
+}

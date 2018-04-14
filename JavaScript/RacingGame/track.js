@@ -4,24 +4,27 @@ const TRACK_COLS = 20;
 const TRACK_ROWS = 15;
 const TRACK_GAP = 2;
 
-var trackGrid = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-                 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1,
-                 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+var trackGrid = [5, 5, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 5, 
+                 5, 1, 1, 0, 0, 0, 0, 0, 0, 1, 5, 1, 0, 0, 0, 0, 0, 0, 1, 1,
+                 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                  1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1,
                  1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-                 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+                 1, 0, 0, 1, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+                 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 4, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-                 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-                 1, 0, 2, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-                 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-                 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
-                 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
-                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,];
+                 1, 0, 2, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 4, 0, 0, 1,
+                 1, 1, 1, 1, 0, 0, 1, 0, 0, 4, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+                 1, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+                 1, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1,
+                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5, 5, 5,];
 const TRACK_ROAD = 0;
 const TRACK_WALL = 1;
 const TRACK_PLAYER_START = 2;
+const TRACK_FINISH = 3;
+const TRACK_FLAG = 4;
+const TRACK_TREE = 5;
 
 function isWallAtColRow(col, row) {
     if(col >= 0 && col < TRACK_COLS && row >= 0 && row < TRACK_ROWS){
@@ -59,9 +62,17 @@ function drawTracks(){
 
             var arryIndex = rowColToArrayIndex(eachCol, eachRow);
 
-            if(trackGrid[arryIndex] == TRACK_WALL){
-                colorRect(TRACK_W*eachCol, TRACK_H*eachRow, TRACK_W-TRACK_GAP, TRACK_H-TRACK_GAP, 'green');
-            } // end of is track here check
+            if(trackGrid[arryIndex] == TRACK_ROAD){
+                canvasContext.drawImage(roadPic, TRACK_W*eachCol, TRACK_H*eachRow);                
+            } else if(trackGrid[arryIndex] == TRACK_WALL){
+                canvasContext.drawImage(wallPic, TRACK_W*eachCol, TRACK_H*eachRow);  
+            }else if(trackGrid[arryIndex] == TRACK_FINISH){
+                canvasContext.drawImage(finishPic, TRACK_W*eachCol, TRACK_H*eachRow);  
+            }else if(trackGrid[arryIndex] == TRACK_FLAG){
+                canvasContext.drawImage(flagPic, TRACK_W*eachCol, TRACK_H*eachRow);  
+            }else if(trackGrid[arryIndex] == TRACK_TREE){
+                canvasContext.drawImage(treePic, TRACK_W*eachCol, TRACK_H*eachRow);  
+            }
         } // end of for each col    
     } // end of for each row
 } // end of drawTracks func
