@@ -1,5 +1,18 @@
 Drive the car around the track:
-                                W or Up Arrow = Forward
-                                A or Left Arrow = Turn Left
-                                S or Down Arrow = Reverse
-                                D or Right Arrow = Turn Right
+
+Blue Car Controls:
+    W = Move Forward
+    A = Turn Left
+    S = Move Back
+    D = Turn Right
+
+Green Car Controls:
+    Up Arrow = Move Forward
+    Left Arrow = Turn Left
+    Down Arrow = Move Back
+    Right Arrow = Turn Right
+
+The car must be moving forward or back to Turn
+
+Still need to fix how the cars interact with the finish line right now they act like walls.
+This will be a simple thing to fix, just need to add a new rule, and another function call to say who wins the race/ start a new map.
