@@ -11,7 +11,7 @@ var levelOne = [5, 5, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 5,
                  1, 0, 0, 4, 1, 5, 5, 1, 1, 0, 0, 0, 1, 1, 5, 5, 1, 0, 0, 1,
                  1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 5, 1, 0, 0, 0, 0, 1, 0, 0, 1,
-                 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+                 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
                  1, 0, 0, 1, 0, 0, 1, 4, 0, 0, 1, 0, 0, 4, 0, 0, 1, 0, 0, 1,
                  1, 2, 2, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 4, 0, 0, 1,
@@ -66,18 +66,19 @@ function carTrackHandling(whichCar){
             document.getElementById('infoText').innerHTML = whichCar.name + " WINS!!!       ...loading next level";
             blueCar.speed = 0;
             greenCar.speed = 0;
+            
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
               }
               
-              async function demo() {
+              async function winAndSetNewLevel() {
                 console.log(whichCar.name + " WINS!!!");  
                 await sleep(9000);
                 console.log('nine seconds later');
                 loadLevel(levelTwo);
               }
               
-              demo();                
+              winAndSetNewLevel();                
             
         }else if(tileHere != TRACK_ROAD){
             //undoes car movment which got it onto the wall
