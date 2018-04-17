@@ -62,9 +62,23 @@ function carTrackHandling(whichCar){
     if(carTrackCol >= 0 && carTrackCol < TRACK_COLS && carTrackRow >= 0 && carTrackRow < TRACK_ROWS){
         var tileHere = returnTileTypeAtColRow(carTrackCol, carTrackRow)
         if(tileHere == TRACK_FINISH){
-            console.log(whichCar.name + " WINS!!!");
-            loadLevel(levelTwo);
 
+            document.getElementById('infoText').innerHTML = whichCar.name + " WINS!!!       ...loading next level";
+            blueCar.speed = 0;
+            greenCar.speed = 0;
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+              }
+              
+              async function demo() {
+                console.log(whichCar.name + " WINS!!!");  
+                await sleep(9000);
+                console.log('nine seconds later');
+                loadLevel(levelTwo);
+              }
+              
+              demo();                
+            
         }else if(tileHere != TRACK_ROAD){
             //undoes car movment which got it onto the wall
             //this is so the center of the car is no longer overlaping the wall

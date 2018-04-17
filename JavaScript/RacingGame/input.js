@@ -1,3 +1,5 @@
+const KEY_ENTER = 13;
+
 // keys to control the car
 const KEY_LEFT_ARROW = 37;
 const KEY_UP_ARROW = 38;
@@ -39,7 +41,7 @@ function keySet(keyEvent, whichCar, setTo) {
 }
 
 function keyPressed(evt) {
-    //console.log("key pressed: " + evt.keyCode);    
+    console.log("key pressed: " + evt.keyCode);    
     keySet(evt, blueCar, true);
     keySet(evt, greenCar, true);
 }
