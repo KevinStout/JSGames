@@ -16,8 +16,13 @@ function imageLoadingDoneStartGame(){
     setInterval(updateAll, 1000/framesPerSecond);
 
     setupInput();    
-    blueCar.reset(blueCarPic);
-    greenCar.reset(greenCarPic);
+    loadLevel(levelOne);
+}
+
+function loadLevel(whichLevel){
+    trackGrid = whichLevel.slice(); // this is copying the track level array so it can be changed as they game is played, but not change the initial state of the map
+    blueCar.reset(blueCarPic, "Blue Car");
+    greenCar.reset(greenCarPic, "Green Car");
 }
 
 function updateAll() {
