@@ -23,8 +23,8 @@ const BRICK_GAP = 2;
 var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
 var bricksLeft = 0;
 
-mouseX = 0;
-mouseY = 0;
+var mouseX = 0;
+var mouseY = 0;
 
 window.onload = function () {
     canvas = document.getElementById('gameCanvas');
