@@ -83,6 +83,7 @@ function ballMove(){
 
 function gameOver(winner){
     showingWinScreen = true;
+    drawNet('black');
     colorText("The " + winner + " Wins!!!", 250, canvas.height/2, 'green');
     colorText("click to continue", 280, canvas.height - 75, 'green');
     ballSpeedX =0;
@@ -175,11 +176,18 @@ function updateMousePos(evt){
 
 function drawAll(){
     colorRect(0,0, canvas.width, canvas.height, 'black'); // drawing blank canvas
+    drawNet('green');
     colorCircle(ballX, ballY, 10, 'green'); // drawing ball
     colorRect(PADDLE_DIST_FROM_EDGE, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'green' ); // drawing left paddle
     colorRect(canvas.width - PADDLE_DIST_FROM_EDGE-PADDLE_THICKNESS, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'green' ); // drawing right paddle
     colorText('Player: ' + player1Score, 100, 100, 'green');
     colorText('Computer: ' + player2Score, 500, 100, 'green');
+}
+
+function drawNet(color){
+    for (var i=0; i<canvas.height; i+=40){
+        colorRect(canvas.width/2, i, 5, 20, color);
+    }    
 }
 
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor){
