@@ -12,7 +12,7 @@ var paddle2Y = 250;
 var player1Score = 0;
 var player2Score = 0;
 
-var player1Name = 'Player';
+var player1Name = 'Human';
 var player2Name = 'Computer';
 
 var showingWinScreen = false;
@@ -73,7 +73,7 @@ function ballMove(){
             ballReset();
             ++player2Score;
     }
-    if(ballY > canvas.height){ // bottom of screen
+    if(ballY > canvas.height && ballSpeedY > 0.0){ // bottom of screen
         ballSpeedY *= -1;
     }
     if(ballY < 0 && ballSpeedY < 0.0){ // top of screen
