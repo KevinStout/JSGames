@@ -73,7 +73,7 @@ function carTrackHandling(whichCar){
               
               async function winAndSetNewLevel() {
                 console.log(whichCar.name + " WINS!!!");  
-                await sleep(9000);
+                await sleep(3000);
                 console.log('nine seconds later');
                 loadLevel(levelTwo);
               }
