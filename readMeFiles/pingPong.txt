@@ -1,0 +1,3 @@
+Move the paddle with your mouse. 
+Hit the ball off the right side of the screen to score a point.
+First side to 5 points wins.
