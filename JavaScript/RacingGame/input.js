@@ -41,7 +41,7 @@ function keySet(keyEvent, whichCar, setTo) {
 }
 
 function keyPressed(evt) {
-    console.log("key pressed: " + evt.keyCode);    
+    //console.log("key pressed: " + evt.keyCode);    
     keySet(evt, blueCar, true);
     keySet(evt, greenCar, true);
 }

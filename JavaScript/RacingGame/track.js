@@ -64,17 +64,17 @@ function carTrackHandling(whichCar){
         if(tileHere == TRACK_FINISH){
 
             document.getElementById('infoText').innerHTML = whichCar.name + " WINS!!!       ...loading next level";
-            blueCar.speed = 0;
-            greenCar.speed = 0;
             
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
               }
               
               async function winAndSetNewLevel() {
-                console.log(whichCar.name + " WINS!!!");  
+                blueCar.speed = 0;
+                greenCar.speed = 0;
+                //console.log(whichCar.name + " WINS!!!");  
                 await sleep(3000);
-                console.log('nine seconds later');
+                //console.log('three seconds later');
                 loadLevel(levelTwo);
               }
               
