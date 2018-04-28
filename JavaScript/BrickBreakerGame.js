@@ -8,6 +8,12 @@ var ballY = 75;
 var ballSpeedX = 5;
 var ballSpeedY = 7;
 
+var lives = 3;
+var showingEndScreen = false;
+var gameWon = false;
+var win = "You Won!!!";
+var lose = "Game Over";
+
 var paddleX = 400;
 
 const PADDLE_WIDTH = 100;
@@ -33,7 +39,9 @@ window.onload = function () {
     var framesPerSecond = 30;
     setInterval(updateAll, 1000/framesPerSecond);
 
-    canvas.addEventListener('mousemove', updateMousePos);
+    canvas.addEventListener('mousedown', handleMouseClick);
+
+    canvas.addEventListener('mousemove', updateMousePos);    
 
     brickReset();
     ballReset();
@@ -75,8 +83,8 @@ function updateAll() {
 }
 
 function ballReset(){
-    ballX = canvas.width/2;
-    ballY = canvas.height/2;
+        ballX = canvas.width/2;
+        ballY = canvas.height/2;      
 }
 
 function moveAll(){
@@ -97,8 +105,8 @@ function ballMove(){
     }
 
     if(ballY > canvas.height){ // bottom of screen
-        ballReset();
-        brickReset();
+        lives --;
+        ballReset();                
     }
     if(ballY < 0 && ballSpeedY < 0.0){ // top of screen
         ballSpeedY *= -1;
@@ -123,8 +131,7 @@ function ballBrickHandling(){
         if(isBrickAtColRow(ballBrickCol, ballBrickRow)){
             brickGrid[brickIndexUnderball] = false;
             bricksLeft--;
-            //console.log(bricksLeft);
-            
+            //console.log(bricksLeft);            
 
             var prevBallX = ballX - ballSpeedX;
             var prevBallY = ballY - ballSpeedY;
@@ -175,20 +182,46 @@ function ballPaddleHandling(){
             ballSpeedX = ballDistFromPaddleCenterX * 0.35; // increase this number for more ball speed off the paddle
 
             if(bricksLeft == 0){
-                brickReset();
+                gameWon = true;
             } // out of bricks, add new grid of bricks
     } // ball center inside paddle
 } // end of ballPaddleHandling
 
-function drawAll(){
-    
-    colorRect(0,0, canvas.width, canvas.height, 'black');
+function drawAll(){  
 
-    colorCircle(ballX, ballY, 10, 'red');
+    if (lives == 0) {
+        gameEnd(lose);
+    }else if (gameWon == true){
+        gameEnd(win);
+    } else {
+        colorRect(0,0, canvas.width, canvas.height, 'black');
+        colorCircle(ballX, ballY, 10, 'red');
+        colorRect(paddleX, canvas.height-PADDLE_DIST_FROM_EDGE, PADDLE_WIDTH, PADDLE_THICKNESS, 'white' );
+        drawBricks();
+        colorText("lives: "+lives, 50, 50, 'white');
+    }    
+}
 
-    colorRect(paddleX, canvas.height-PADDLE_DIST_FROM_EDGE, PADDLE_WIDTH, PADDLE_THICKNESS, 'white' );
+function gameEnd(winLose){   
+    showingEndScreen = true;     
+    colorRect(0,0, canvas.width, canvas.height, 'black');   
+    colorText(winLose, canvas.width/3+25, canvas.height/2, 'white');
+    colorText("click to continue", canvas.width/3, canvas.height - 75, 'white');
+    ballSpeedX =0;
+    ballSpeedY = 0;
+    ballY = 400;    
+}
 
-    drawBricks();
+function handleMouseClick(evt){
+    if(showingEndScreen == true){
+        lives = 3;
+        ballSpeedX = 5;
+        ballSpeedY = 7;
+        gameWon = false;
+        ballReset();
+        brickReset();
+        showingEndScreen == false;
+    }
 }
 
 function rowColToArrayIndex(col, row){
@@ -223,5 +256,6 @@ function colorCircle(centerX, centerY, radius, fillColor){
 
 function colorText(showWords, textX, textY, fillColor){
     canvasContext.fillStyle = fillColor;
+    canvasContext.font = "30px Arial";
     canvasContext.fillText(showWords, textX, textY);
 }
